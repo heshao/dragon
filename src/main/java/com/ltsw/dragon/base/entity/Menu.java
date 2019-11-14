@@ -12,7 +12,7 @@ import java.util.Collection;
 @Entity
 public class Menu {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long parentId;
     private String name;
