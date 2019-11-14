@@ -1,7 +1,5 @@
 package com.ltsw.dragon.config;
 
-import com.ltsw.dragon.base.entity.Role;
-import com.ltsw.dragon.base.entity.User;
 import com.ltsw.dragon.base.service.MenuService;
 import com.ltsw.dragon.base.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +11,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author heshaobing
  */
@@ -24,7 +19,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     @Autowired
-    private UserDetailsServiceImpl UserDetailsService;
+    private UserDetailsServiceImpl userDetailsService;
     @Autowired
     private MenuService menuService;
 
@@ -56,7 +51,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(UserDetailsService).passwordEncoder(new BCryptPasswordEncoder());
+        auth.userDetailsService(userDetailsService).passwordEncoder(new BCryptPasswordEncoder());
     }
 
 

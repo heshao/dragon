@@ -5,7 +5,7 @@ import lombok.Data;
 import javax.persistence.*;
 
 /**
- * @author Yty
+ * @author heshaobing
  */
 @Data
 @Entity
