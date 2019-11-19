@@ -3,6 +3,7 @@ package com.ltsw.dragon.base.service;
 import com.ltsw.dragon.base.entity.Menu;
 import com.ltsw.dragon.base.entity.MenuRole;
 import com.ltsw.dragon.base.repository.MenuRepository;
+import com.ltsw.dragon.base.repository.MenuRoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
@@ -11,6 +12,7 @@ import org.springframework.security.web.access.intercept.FilterInvocationSecurit
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
@@ -21,10 +23,13 @@ import java.util.*;
  * @author heshaobing
  */
 @Service
+@Transactional(readOnly = true)
 public class MenuService implements FilterInvocationSecurityMetadataSource {
 
     @Autowired
     private MenuRepository menuRepository;
+    @Autowired
+    private MenuRoleRepository menuRoleRepository;
 
     private FilterInvocationSecurityMetadataSource securityMetadataSource;
     private Map<RequestMatcher, Collection<ConfigAttribute>> requestMap;
@@ -37,18 +42,14 @@ public class MenuService implements FilterInvocationSecurityMetadataSource {
             if (!StringUtils.isEmpty(menu.getUri())) {
 
                 AntPathRequestMatcher requestMatcher = new AntPathRequestMatcher(menu.getUri());
-                Collection<MenuRole> menuRoles = menu.getMenuRoles();
+                Collection<MenuRole> menuRoles = menuRoleRepository.findByMenu_Id(menu.getId());
+
                 List<String> authorities = new ArrayList<>();
                 menuRoles.forEach(menuRole -> authorities.add(menuRole.getRole().getAuthority()));
-                requestMap.put(requestMatcher, SecurityConfig.createList(hasAnyRole(authorities.toArray(new String[0]))));
+
+                requestMap.put(requestMatcher, SecurityConfig.createList(authorities.toArray(new String[0])));
             }
         });
-    }
-
-    private String hasAnyRole(String... authorities) {
-        String anyAuthorities = StringUtils.arrayToDelimitedString(authorities,
-                "','ROLE_");
-        return "hasAnyRole('ROLE_" + anyAuthorities + "')";
     }
 
     public void refresh() {

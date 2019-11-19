@@ -4,7 +4,6 @@ import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
-import java.util.Collection;
 
 /**
  * 角色
@@ -22,9 +21,6 @@ public class Role implements GrantedAuthority {
     @Column(unique = true)
     private String role;
     private String description;
-
-    @Transient
-    private Collection<MenuRole> menuRoles;
 
     @Override
     public String getAuthority() {

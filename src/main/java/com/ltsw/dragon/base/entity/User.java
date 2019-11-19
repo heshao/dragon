@@ -8,7 +8,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
-import java.util.stream.Collectors;
 
 /**
  * @author heshaobing
@@ -31,12 +30,11 @@ public class User implements UserDetails {
     private Department department;
 
     @Transient
-    private Collection<UserRole> userRoles;
-
+    private Collection<Role> authorities;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return userRoles.stream().map(UserRole::getRole).collect(Collectors.toList());
+        return authorities;
     }
 
     @Override

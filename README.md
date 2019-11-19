@@ -45,7 +45,8 @@
     
     }
     ```
-   
+---
+
 ### JPA核心注解
 
 注解 | 说明 
@@ -153,3 +154,10 @@ public class Role {
 - `name` （可选）外键列的名称。在其中找到它的表取决于上下文。默认主表外键
 - `referencedColumnName` （可选）此外键列引用的列的名称。默认从表主键
 - `foreignKey` （可选）用于指定或控制在表生成生效时外键约束的生成。默认 `PROVIDER_DEFAULT`
+
+---
+
+### 问题解决
+
+* 实体类相互引用 'toString()' 导致 'StackOverflowException'
+> @ToString(exclude = {"user","role"})

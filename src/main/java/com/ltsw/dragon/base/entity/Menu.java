@@ -1,6 +1,7 @@
 package com.ltsw.dragon.base.entity;
 
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -9,6 +10,7 @@ import java.util.Collection;
  * @author heshao
  */
 @Data
+@ToString(exclude = {"menuRoles"})
 @Entity
 public class Menu {
     @Id

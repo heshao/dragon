@@ -1,6 +1,7 @@
 package com.ltsw.dragon.base.entity;
 
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.*;
 
@@ -8,6 +9,7 @@ import javax.persistence.*;
  * @author heshaobing
  */
 @Data
+@ToString(exclude = {"user", "role"})
 @Entity
 public class UserRole {
 
@@ -21,4 +23,5 @@ public class UserRole {
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
     private Role role;
+
 }

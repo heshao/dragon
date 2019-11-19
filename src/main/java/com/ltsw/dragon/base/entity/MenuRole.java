@@ -2,6 +2,7 @@ package com.ltsw.dragon.base.entity;
 
 
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.*;
 
@@ -9,6 +10,7 @@ import javax.persistence.*;
  * @author heshaobing
  */
 @Data
+@ToString(exclude = {"menu", "role"})
 @Entity
 public class MenuRole {
 
@@ -16,7 +18,7 @@ public class MenuRole {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
     private Menu menu;
     @ManyToOne
