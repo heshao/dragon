@@ -12,3 +12,5 @@ spring:
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
   jooq:
     sql-dialect: MySQL
+  thymeleaf:
+    cache: false
