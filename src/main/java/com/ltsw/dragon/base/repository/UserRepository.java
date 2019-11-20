@@ -18,4 +18,21 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @return
      */
     Optional<User> findByUsername(String username);
+
+    /**
+     * 用户是否存在
+     *
+     * @param id       id
+     * @param username 用户名
+     * @return
+     */
+    boolean existsByIdAndUsername(Long id, String username);
+
+    /**
+     * 用户是否存在
+     *
+     * @param username 用户名
+     * @return
+     */
+    boolean existsByUsername(String username);
 }
