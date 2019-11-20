@@ -20,4 +20,25 @@ public interface MenuRoleRepository extends JpaRepository<MenuRole, Long> {
      */
     List<MenuRole> findByMenu_Id(long menuId);
 
+    /**
+     * 查询菜单角色关系
+     *
+     * @param roleId 角色Id
+     * @return
+     */
+    List<MenuRole> findByRole_Id(long roleId);
+
+    /**
+     * 删除关系
+     *
+     * @param menuId 菜单ID
+     */
+    void deleteByMenu_Id(long menuId);
+
+    /**
+     * 删除关系
+     *
+     * @param roleId 角色ID
+     */
+    void deleteByRole_Id(long roleId);
 }

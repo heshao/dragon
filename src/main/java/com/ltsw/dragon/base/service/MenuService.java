@@ -2,8 +2,10 @@ package com.ltsw.dragon.base.service;
 
 import com.ltsw.dragon.base.entity.Menu;
 import com.ltsw.dragon.base.entity.MenuRole;
+import com.ltsw.dragon.base.entity.Role;
 import com.ltsw.dragon.base.repository.MenuRepository;
 import com.ltsw.dragon.base.repository.MenuRoleRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
@@ -22,6 +24,7 @@ import java.util.*;
 /**
  * @author heshaobing
  */
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 public class MenuService implements FilterInvocationSecurityMetadataSource {
@@ -53,8 +56,48 @@ public class MenuService implements FilterInvocationSecurityMetadataSource {
     }
 
     public void refresh() {
+        log.info("刷新菜单权限——开始");
+        long start = System.currentTimeMillis();
         requestMap.clear();
         init();
+        long end = System.currentTimeMillis();
+        log.info("刷新菜单权限——结束：耗时{}ms", end - start);
+    }
+
+    public Optional<Menu> get(long id) {
+        Optional<Menu> optional = menuRepository.findById(id);
+        optional.ifPresent(menu -> {
+            List<MenuRole> menuRoles = menuRoleRepository.findByMenu_Id(id);
+            List<Role> roles = new ArrayList<>();
+            menuRoles.forEach(menuRole -> roles.add(menuRole.getRole()));
+            menu.setRoles(roles);
+        });
+        return optional;
+    }
+
+    public List<Menu> findAll() {
+        return menuRepository.findAll();
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void save(Menu menu) {
+        menuRepository.save(menu);
+        menuRoleRepository.deleteByMenu_Id(menu.getId());
+        Collection<Role> roles = menu.getRoles();
+        roles.forEach(role -> {
+            MenuRole menuRole = new MenuRole();
+            menuRole.setMenu(menu);
+            menuRole.setRole(role);
+            menuRoleRepository.save(menuRole);
+        });
+        refresh();
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void delete(long id) {
+        menuRepository.deleteById(id);
+        menuRoleRepository.deleteByMenu_Id(id);
+        refresh();
     }
 
     public MenuService set(FilterInvocationSecurityMetadataSource securityMetadataSource) {
