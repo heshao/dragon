@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
 
 /**
  * @author heshaobing
@@ -20,6 +21,10 @@ public class DepartmentService {
 
     public Department get(long id) {
         return repository.findById(id).orElseThrow(EntityNotFoundException::new);
+    }
+
+    public List<Department> findAll() {
+        return repository.findAll();
     }
 
     public Page<Department> findAll(Pageable pageable) {

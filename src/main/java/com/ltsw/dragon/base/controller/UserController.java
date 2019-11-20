@@ -1,7 +1,9 @@
 package com.ltsw.dragon.base.controller;
 
+import com.ltsw.dragon.base.entity.Department;
 import com.ltsw.dragon.base.entity.Role;
 import com.ltsw.dragon.base.entity.User;
+import com.ltsw.dragon.base.service.DepartmentService;
 import com.ltsw.dragon.base.service.RoleService;
 import com.ltsw.dragon.base.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,8 @@ public class UserController {
     private UserDetailsServiceImpl userDetailsService;
     @Autowired
     private RoleService roleService;
+    @Autowired
+    private DepartmentService departmentService;
 
     @RequestMapping("get")
     public void get(long id, Model model) {
@@ -39,8 +43,10 @@ public class UserController {
     public void edit(Long id, Model model) {
         User user = userDetailsService.get(id).orElseGet(User::new);
         List<Role> roles = roleService.findAll();
+        List<Department> departments = departmentService.findAll();
         model.addAttribute(user);
         model.addAttribute(roles);
+        model.addAttribute(departments);
     }
 
     @RequestMapping("list")
