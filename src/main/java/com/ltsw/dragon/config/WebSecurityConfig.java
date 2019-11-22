@@ -37,6 +37,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+
+        // 配置iframe
+        http.headers().frameOptions().sameOrigin();
         // @formatter:off
         http
                 .csrf().disable()
