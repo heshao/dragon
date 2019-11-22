@@ -1,6 +1,7 @@
 package com.ltsw.dragon.base.repository;
 
 import com.ltsw.dragon.base.entity.MenuRole;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,6 +12,15 @@ import java.util.List;
  */
 @Repository
 public interface MenuRoleRepository extends JpaRepository<MenuRole, Long> {
+
+    /**
+     * 关联查询所有菜单角色关系
+     *
+     * @return
+     */
+    @Override
+    @EntityGraph(value = "withAll")
+    List<MenuRole> findAll();
 
     /**
      * 查询菜单角色关系

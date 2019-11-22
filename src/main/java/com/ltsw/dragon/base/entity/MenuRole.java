@@ -12,6 +12,7 @@ import javax.persistence.*;
 @Data
 @ToString(exclude = {"menu", "role"})
 @Entity
+@NamedEntityGraph(name = "withAll", attributeNodes = {@NamedAttributeNode("menu"), @NamedAttributeNode("role")})
 public class MenuRole {
 
     @Id

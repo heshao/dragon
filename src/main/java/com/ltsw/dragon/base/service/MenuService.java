@@ -37,22 +37,29 @@ public class MenuService implements FilterInvocationSecurityMetadataSource {
     private FilterInvocationSecurityMetadataSource securityMetadataSource;
     private Map<RequestMatcher, Collection<ConfigAttribute>> requestMap;
 
+    /**
+     * 初始化加载菜单权限
+     */
     @PostConstruct
     public void init() {
         requestMap = new HashMap<>(20);
-        List<Menu> menus = menuRepository.findAll();
-        menus.forEach(menu -> {
+        List<MenuRole> menuRoles = menuRoleRepository.findAll();
+        menuRoles.forEach(menuRole -> {
+            Menu menu = menuRole.getMenu();
             if (!StringUtils.isEmpty(menu.getUri())) {
 
                 AntPathRequestMatcher requestMatcher = new AntPathRequestMatcher(menu.getUri());
-                Collection<MenuRole> menuRoles = menuRoleRepository.findByMenu_Id(menu.getId());
-
-                List<String> authorities = new ArrayList<>();
-                menuRoles.forEach(menuRole -> authorities.add(menuRole.getRole().getAuthority()));
-
-                requestMap.put(requestMatcher, SecurityConfig.createList(authorities.toArray(new String[0])));
+                Collection<ConfigAttribute> configAttributes;
+                if (requestMap.containsKey(requestMatcher)) {
+                    configAttributes = requestMap.get(requestMatcher);
+                } else {
+                    configAttributes = new ArrayList<>();
+                    requestMap.put(requestMatcher, configAttributes);
+                }
+                configAttributes.addAll(SecurityConfig.createList(menuRole.getRole().getAuthority()));
             }
         });
+
     }
 
     public void refresh() {
