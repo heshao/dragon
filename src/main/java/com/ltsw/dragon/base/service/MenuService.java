@@ -7,8 +7,14 @@ import com.ltsw.dragon.base.repository.MenuRepository;
 import com.ltsw.dragon.base.repository.MenuRoleRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.security.access.AccessDecisionManager;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -20,6 +26,7 @@ import org.springframework.util.StringUtils;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author heshaobing
@@ -34,6 +41,7 @@ public class MenuService implements FilterInvocationSecurityMetadataSource {
     @Autowired
     private MenuRoleRepository menuRoleRepository;
 
+    private AccessDecisionManager accessDecisionManager;
     private FilterInvocationSecurityMetadataSource securityMetadataSource;
     private Map<RequestMatcher, Collection<ConfigAttribute>> requestMap;
 
@@ -86,6 +94,34 @@ public class MenuService implements FilterInvocationSecurityMetadataSource {
         return menuRepository.findAll();
     }
 
+    /**
+     * 获取当前用户已授权菜单
+     * <p>可用、可见</p>
+     *
+     * @return
+     */
+    public List<Menu> findAllWithGranted() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Menu filter = new Menu();
+        filter.setEnabled(true);
+        filter.setVisible(true);
+        ExampleMatcher matcher = ExampleMatcher.matching().withIgnorePaths("sort");
+        Example<Menu> ex = Example.of(filter, matcher);
+        return menuRepository.findAll(ex).stream().filter(menu -> {
+            if (StringUtils.isEmpty(menu.getUri())) {
+                return true;
+            }
+            FilterInvocation object = new FilterInvocation(menu.getUri(), "");
+            Collection<ConfigAttribute> attributes = getAttributes(object);
+            try {
+                accessDecisionManager.decide(authentication, object, attributes);
+                return true;
+            } catch (AccessDeniedException accessDeniedException) {
+                return false;
+            }
+        }).collect(Collectors.toList());
+    }
+
     @Transactional(rollbackFor = Exception.class)
     public void save(Menu menu) {
         menuRepository.save(menu);
@@ -109,6 +145,11 @@ public class MenuService implements FilterInvocationSecurityMetadataSource {
 
     public MenuService set(FilterInvocationSecurityMetadataSource securityMetadataSource) {
         this.securityMetadataSource = securityMetadataSource;
+        return this;
+    }
+
+    public MenuService set(AccessDecisionManager accessDecisionManager) {
+        this.accessDecisionManager = accessDecisionManager;
         return this;
     }
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta charset="utf-8">
@@ -92,342 +92,8 @@
           <span>layuiAdmin</span>
         </div>
 
-        <ul class="layui-nav layui-nav-tree" lay-shrink="all" id="LAY-system-side-menu"
-            lay-filter="layadmin-system-side-menu">
-          <li data-name="home" class="layui-nav-item layui-nav-itemed">
-            <a href="javascript:;" lay-tips="主页" lay-direction="2">
-              <i class="layui-icon layui-icon-home"></i>
-              <cite>主页</cite>
-              <span class="layui-nav-more"></span></a>
-            <dl class="layui-nav-child">
-              <dd data-name="console" class="layui-this">
-                <a lay-href="home/console.html">控制台</a>
-              </dd>
-              <dd data-name="console">
-                <a lay-href="home/homepage1.html">主页一</a>
-              </dd>
-              <dd data-name="console">
-                <a lay-href="home/homepage2.html">主页二</a>
-              </dd>
-            </dl>
-          </li>
-          <li data-name="component" class="layui-nav-item">
-            <a href="javascript:;" lay-tips="组件" lay-direction="2">
-              <i class="layui-icon layui-icon-component"></i>
-              <cite>组件</cite>
-              <span class="layui-nav-more"></span></a>
-            <dl class="layui-nav-child">
-              <dd data-name="grid">
-                <a href="javascript:;">栅格<span class="layui-nav-more"></span></a>
-                <dl class="layui-nav-child">
-                  <dd data-name="list"><a lay-href="component/grid/list.html">等比例列表排列</a></dd>
-                  <dd data-name="mobile"><a lay-href="component/grid/mobile.html">按移动端排列</a></dd>
-                  <dd data-name="mobile-pc"><a lay-href="component/grid/mobile-pc.html">移动桌面端组合</a></dd>
-                  <dd data-name="all"><a lay-href="component/grid/all.html">全端复杂组合</a></dd>
-                  <dd data-name="stack"><a lay-href="component/grid/stack.html">低于桌面堆叠排列</a></dd>
-                  <dd data-name="speed-dial"><a lay-href="component/grid/speed-dial.html">九宫格</a></dd>
-                </dl>
-              </dd>
-              <dd data-name="button">
-                <a lay-href="component/button/index.html">按钮</a>
-              </dd>
-              <dd data-name="form">
-                <a href="javascript:;">表单<span class="layui-nav-more"></span></a>
-                <dl class="layui-nav-child">
-                  <dd><a lay-href="component/form/element.html">表单元素</a></dd>
-                  <dd><a lay-href="component/form/group.html">表单组合</a></dd>
-                </dl>
-              </dd>
-              <dd data-name="nav">
-                <a lay-href="component/nav/index.html">导航</a>
-              </dd>
-              <dd data-name="tabs">
-                <a lay-href="component/tabs/index.html">选项卡</a>
-              </dd>
-              <dd data-name="progress">
-                <a lay-href="component/progress/index.html">进度条</a>
-              </dd>
-              <dd data-name="panel">
-                <a lay-href="component/panel/index.html">面板</a>
-              </dd>
-              <dd data-name="badge">
-                <a lay-href="component/badge/index.html">徽章</a>
-              </dd>
-              <dd data-name="timeline">
-                <a lay-href="component/timeline/index.html">时间线</a>
-              </dd>
-              <dd data-name="anim">
-                <a lay-href="component/anim/index.html">动画</a>
-              </dd>
-              <dd data-name="auxiliar">
-                <a lay-href="component/auxiliar/index.html">辅助</a>
-              </dd>
-              <dd data-name="layer">
-                <a href="javascript:;">通用弹层<span class="layui-nav-more"></span></a>
-                <dl class="layui-nav-child">
-                  <dd data-name="list">
-                    <a lay-href="component/layer/list.html" lay-text="layer 功能演示">功能演示</a>
-                  </dd>
-                  <dd data-name="special-demo">
-                    <a lay-href="component/layer/special-demo.html" lay-text="layer 特殊示例">特殊示例</a>
-                  </dd>
-                  <dd data-name="theme">
-                    <a lay-href="component/layer/theme.html" lay-text="layer 风格定制">风格定制</a>
-                  </dd>
-                </dl>
-              </dd>
-              <dd data-name="laydate">
-                <a href="javascript:;">日期时间<span class="layui-nav-more"></span></a>
-                <dl class="layui-nav-child">
-                  <dd data-name="demo1">
-                    <a lay-href="component/laydate/demo1.html" lay-text="layDate 功能演示一">功能演示一</a>
-                  </dd>
-                  <dd data-name="demo2">
-                    <a lay-href="component/laydate/demo2.html" lay-text="layDate 功能演示二">功能演示二</a>
-                  </dd>
-                  <dd data-name="theme">
-                    <a lay-href="component/laydate/theme.html" lay-text="layDate 设定主题">设定主题</a>
-                  </dd>
-                  <dd data-name="special-demo">
-                    <a lay-href="component/laydate/special-demo.html" lay-text="layDate 特殊示例">特殊示例</a>
-                  </dd>
-                </dl>
-              </dd>
-              <dd data-name="table-static">
-                <a lay-href="component/table/static.html">静态表格</a>
-              </dd>
-              <dd data-name="table">
-                <a href="javascript:;">数据表格<span class="layui-nav-more"></span></a>
-                <dl class="layui-nav-child">
-                  <dd data-name="simple">
-                    <a lay-href="component/table/simple.html" lay-text="">简单数据表格</a>
-                  </dd>
-                  <dd data-name="auto">
-                    <a lay-href="component/table/auto.html" lay-text="">列宽自动分配</a>
-                  </dd>
-                  <dd data-name="data">
-                    <a lay-href="component/table/data.html" lay-text="">赋值已知数据</a>
-                  </dd>
-                  <dd data-name="tostatic">
-                    <a lay-href="component/table/tostatic.html" lay-text="">转化静态表格</a>
-                  </dd>
-                  <dd data-name="page">
-                    <a lay-href="component/table/page.html" lay-text="">开启分页</a>
-                  </dd>
-                  <dd data-name="resetPage">
-                    <a lay-href="component/table/resetPage.html" lay-text="">自定义分页</a>
-                  </dd>
-                  <dd data-name="toolbar">
-                    <a lay-href="component/table/toolbar.html" lay-text="">开启头部工具栏</a>
-                  </dd>
-                  <dd data-name="totalRow">
-                    <a lay-href="component/table/totalRow.html" lay-text="">开启合计行</a>
-                  </dd>
-                  <dd data-name="height">
-                    <a lay-href="component/table/height.html" lay-text="">高度最大适应</a>
-                  </dd>
-                  <dd data-name="checkbox">
-                    <a lay-href="component/table/checkbox.html" lay-text="">开启复选框</a>
-                  </dd>
-                  <dd data-name="radio">
-                    <a lay-href="component/table/radio.html" lay-text="">开启单选框</a>
-                  </dd>
-                  <dd data-name="cellEdit">
-                    <a lay-href="component/table/cellEdit.html" lay-text="">开启单元格编辑</a>
-                  </dd>
-                  <dd data-name="form">
-                    <a lay-href="component/table/form.html" lay-text="">加入表单元素</a>
-                  </dd>
-                  <dd data-name="style">
-                    <a lay-href="component/table/style.html" lay-text="">设置单元格样式</a>
-                  </dd>
-                  <dd data-name="fixed">
-                    <a lay-href="component/table/fixed.html" lay-text="">固定列</a>
-                  </dd>
-                  <dd data-name="operate">
-                    <a lay-href="component/table/operate.html" lay-text="">数据操作</a>
-                  </dd>
-                  <dd data-name="parseData">
-                    <a lay-href="component/table/parseData.html" lay-text="">解析任意数据格式</a>
-                  </dd>
-                  <dd data-name="onrow">
-                    <a lay-href="component/table/onrow.html" lay-text="">监听行事件</a>
-                  </dd>
-                  <dd data-name="reload">
-                    <a lay-href="component/table/reload.html" lay-text="">数据表格的重载</a>
-                  </dd>
-                  <dd data-name="initSort">
-                    <a lay-href="component/table/initSort.html" lay-text="">设置初始排序</a>
-                  </dd>
-                  <dd data-name="cellEvent">
-                    <a lay-href="component/table/cellEvent.html" lay-text="">监听单元格事件</a>
-                  </dd>
-                  <dd data-name="thead">
-                    <a lay-href="component/table/thead.html" lay-text="">复杂表头</a>
-                  </dd>
-                </dl>
-              </dd>
-              <dd data-name="laypage">
-                <a href="javascript:;">分页<span class="layui-nav-more"></span></a>
-                <dl class="layui-nav-child">
-                  <dd data-name="demo1">
-                    <a lay-href="component/laypage/demo1.html" lay-text="layPage 功能演示一">功能演示一</a>
-                  </dd>
-                  <dd data-name="demo2">
-                    <a lay-href="component/laypage/demo2.html" lay-text="layPage 功能演示二">功能演示二</a>
-                  </dd>
-                </dl>
-              </dd>
-              <dd data-name="upload">
-                <a href="javascript:;">上传<span class="layui-nav-more"></span></a>
-                <dl class="layui-nav-child">
-                  <dd data-name="demo1">
-                    <a lay-href="component/upload/demo1.html" lay-text="上传功能演示一">功能演示一</a>
-                  </dd>
-                  <dd data-name="demo2">
-                    <a lay-href="component/upload/demo2.html" lay-text="上传功能演示二">功能演示二</a>
-                  </dd>
-                </dl>
-              </dd>
-              <dd data-name="colorpicker">
-                <a lay-href="component/colorpicker/index.html">颜色选择器</a>
-              </dd>
-              <dd data-name="slider">
-                <a lay-href="component/slider/index.html">滑块组件</a>
-              </dd>
-              <dd data-name="rate">
-                <a lay-href="component/rate/index.html">评分</a>
-              </dd>
-              <dd data-name="carousel">
-                <a lay-href="component/carousel/index.html">轮播</a>
-              </dd>
-              <dd data-name="flow">
-                <a lay-href="component/flow/index.html">流加载</a>
-              </dd>
-              <dd data-name="util">
-                <a lay-href="component/util/index.html">工具</a>
-              </dd>
-              <dd data-name="code">
-                <a lay-href="component/code/index.html">代码修饰</a>
-              </dd>
-            </dl>
-          </li>
-          <li data-name="template" class="layui-nav-item">
-            <a href="javascript:;" lay-tips="页面" lay-direction="2">
-              <i class="layui-icon layui-icon-template"></i>
-              <cite>页面</cite>
-              <span class="layui-nav-more"></span></a>
-            <dl class="layui-nav-child">
-              <dd><a lay-href="template/personalpage.html">个人主页</a></dd>
-              <dd><a lay-href="template/addresslist.html">通讯录</a></dd>
-              <dd><a lay-href="template/caller.html">客户列表</a></dd>
-              <dd><a lay-href="template/goodslist.html">商品列表</a></dd>
-              <dd><a lay-href="template/msgboard.html">留言板</a></dd>
-              <dd><a lay-href="template/search.html">搜索结果</a></dd>
-              <dd><a href="https://www.layui.com/admin/std/dist/views/user/reg.html" target="_blank">注册</a></dd>
-              <dd><a href="https://www.layui.com/admin/std/dist/views/user/login.html" target="_blank">登入</a></dd>
-              <dd><a href="https://www.layui.com/admin/std/dist/views/user/forget.html" target="_blank">忘记密码</a></dd>
-              <dd><a lay-href="template/tips/404.html">404页面不存在</a></dd>
-              <dd><a lay-href="template/tips/error.html">错误提示</a></dd>
-              <dd><a lay-href="//www.baidu.com/">百度一下</a></dd>
-              <dd><a lay-href="//www.layui.com/">layui官网</a></dd>
-              <dd><a lay-href="//www.layui.com/admin/">layuiAdmin官网</a></dd>
-            </dl>
-          </li>
-          <li data-name="app" class="layui-nav-item">
-            <a href="javascript:;" lay-tips="应用" lay-direction="2">
-              <i class="layui-icon layui-icon-app"></i>
-              <cite>应用</cite>
-              <span class="layui-nav-more"></span></a>
-            <dl class="layui-nav-child">
+        <ul class="layui-nav layui-nav-tree" lay-shrink="all" id="LAY-system-side-menu" lay-filter="layadmin-system-side-menu">
 
-              <dd data-name="content">
-                <a href="javascript:;">内容系统<span class="layui-nav-more"></span></a>
-                <dl class="layui-nav-child">
-                  <dd data-name="list"><a lay-href="app/content/list.html">文章列表</a></dd>
-                  <dd data-name="tags"><a lay-href="app/content/tags.html">分类管理</a></dd>
-                  <dd data-name="comment"><a lay-href="app/content/comment.html">评论管理</a></dd>
-                </dl>
-              </dd>
-              <dd data-name="forum">
-                <a href="javascript:;">社区系统<span class="layui-nav-more"></span></a>
-                <dl class="layui-nav-child">
-                  <dd data-name="list"><a lay-href="app/forum/list.html">帖子列表</a></dd>
-                  <dd data-name="replys"><a lay-href="app/forum/replys.html">回帖列表</a></dd>
-                </dl>
-              </dd>
-              <dd>
-                <a lay-href="app/message/index.html">消息中心</a>
-              </dd>
-              <dd data-name="workorder">
-                <a lay-href="app/workorder/list.html">工单系统</a>
-              </dd>
-            </dl>
-          </li>
-          <li data-name="senior" class="layui-nav-item">
-            <a href="javascript:;" lay-tips="高级" lay-direction="2">
-              <i class="layui-icon layui-icon-senior"></i>
-              <cite>高级</cite>
-              <span class="layui-nav-more"></span></a>
-            <dl class="layui-nav-child">
-              <dd>
-                <a layadmin-event="im">LayIM 通讯系统</a>
-              </dd>
-              <dd data-name="echarts">
-                <a href="javascript:;">Echarts集成<span class="layui-nav-more"></span></a>
-                <dl class="layui-nav-child">
-                  <dd><a lay-href="senior/echarts/line.html">折线图</a></dd>
-                  <dd><a lay-href="senior/echarts/bar.html">柱状图</a></dd>
-                  <dd><a lay-href="senior/echarts/map.html">地图</a></dd>
-                </dl>
-              </dd>
-            </dl>
-          </li>
-          <li data-name="user" class="layui-nav-item">
-            <a href="javascript:;" lay-tips="用户" lay-direction="2">
-              <i class="layui-icon layui-icon-user"></i>
-              <cite>用户</cite>
-              <span class="layui-nav-more"></span></a>
-            <dl class="layui-nav-child">
-              <dd>
-                <a lay-href="user/user/list.html">网站用户</a>
-              </dd>
-              <dd>
-                <a lay-href="user/administrators/list.html">后台管理员</a>
-              </dd>
-              <dd>
-                <a lay-href="user/administrators/role.html">角色管理</a>
-              </dd>
-            </dl>
-          </li>
-          <li data-name="set" class="layui-nav-item">
-            <a href="javascript:;" lay-tips="设置" lay-direction="2">
-              <i class="layui-icon layui-icon-set"></i>
-              <cite>设置</cite>
-              <span class="layui-nav-more"></span></a>
-            <dl class="layui-nav-child">
-              <dd class="layui-nav-itemed">
-                <a href="javascript:;">系统设置<span class="layui-nav-more"></span></a>
-                <dl class="layui-nav-child">
-                  <dd><a lay-href="set/system/website.html">网站设置</a></dd>
-                  <dd><a lay-href="set/system/email.html">邮件服务</a></dd>
-                </dl>
-              </dd>
-              <dd class="layui-nav-itemed">
-                <a href="javascript:;">我的设置<span class="layui-nav-more"></span></a>
-                <dl class="layui-nav-child">
-                  <dd><a lay-href="set/user/info.html">基本资料</a></dd>
-                  <dd><a lay-href="set/user/password.html">修改密码</a></dd>
-                </dl>
-              </dd>
-            </dl>
-          </li>
-          <li data-name="get" class="layui-nav-item">
-            <a href="javascript:;" lay-href="//www.layui.com/admin/#get" lay-tips="授权" lay-direction="2">
-              <i class="layui-icon layui-icon-auz"></i>
-              <cite>授权</cite>
-            </a>
-          </li>
         </ul>
       </div>
     </div>
@@ -450,8 +116,10 @@
       </div>
       <div class="layui-tab" lay-unauto="" lay-allowclose="true" lay-filter="layadmin-layout-tabs">
         <ul class="layui-tab-title" id="LAY_app_tabsheader">
-          <li lay-id="/hello" lay-attr="home/console.html" class="layui-this"><i
-                  class="layui-icon layui-icon-home"></i><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></li>
+          <li lay-id="/hello" lay-attr="/hello" class="layui-this">
+            <i class="layui-icon layui-icon-home"></i>
+            <i class="layui-icon layui-unselect layui-tab-close">ဆ</i>
+          </li>
         </ul>
       </div>
     </div>
@@ -470,7 +138,73 @@
 </div>
 
 <script src="/layuiadmin/layui/layui.js"></script>
+<script th:inline="javascript">
+  var ctx = /*[[@{/}]]*/'';
+  if (ctx === '/') ctx = '';
+  var menus = [[${menuList}]];
+
+  layui.use('jquery', function () {
+    window.$ = layui.$;
+
+    initSideMenu(menus);
+  });
+
+  function initSideMenu(menuList) {
+    var element = $("#LAY-system-side-menu");
+    element.empty();
+
+    for (var i in menuList) {
+      var menu = menuList[i];
+      if (!menu.visible) continue;
+      var item = '<li id="side-menu-' + menu.id + '" data-name="" class="layui-nav-item">';
+      if (menu.uri) {
+        item += '<a lay-href="' + ctx + menu.uri + '" lay-tips="' + menu.name + '" lay-direction="2">';
+      } else {
+        item += '<a href="javascript:;" lay-tips="' + menu.name + '" >';
+      }
+      item += '<i class="layui-icon "></i>';
+      item += '<cite>' + menu.name + '</cite>';
+      if (menu.children) {
+        item += '<span class="layui-nav-more"></span>';
+      }
+      item += '</a></li>';
+      element.append(item);
+      if (menu.children) {
+        initChildMenu(menu.id, menu.children);
+      }
+    }
+  }
+
+  function initChildMenu(id, menuList) {
+    var element = $("#side-menu-" + id);
+    element.append('<dl class="layui-nav-child"></dl>');
+    element = element.find('dl');
+
+    for (var i in menuList) {
+      var menu = menuList[i];
+      if (!menu.visible) continue;
+      var item = '<dd id="side-menu-' + menu.id + '" data-name="" >';
+      if (menu.uri) {
+        item += '<a lay-href="' + ctx + menu.uri + '" lay-text="">';
+      } else {
+        item += '<a href="javascript:;" >';
+      }
+      item += menu.name;
+      if (menu.children) {
+        item += '<span class="layui-nav-more"></span>';
+      }
+      item += '</a></dd>';
+      element.append(item);
+      if (menu.children) {
+        initChildMenu(menu.id, menu.children);
+      }
+    }
+  }
+
+
+</script>
 <script>
+
   layui.config({
     base: '/layuiadmin/' //静态资源所在路径
   }).extend({
@@ -498,4 +232,6 @@
 <div id="translate-button" style="background-color: white; box-shadow: rgb(221, 221, 221) 0px 0px 2px 2px;">
   <img src="data:image/png;base64,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">
 </div>
+
+
 </html>

@@ -47,7 +47,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
                     @Override
                     public <O extends FilterSecurityInterceptor> O postProcess(O object) {
-                        object.setSecurityMetadataSource(menuService.set(object.getSecurityMetadataSource()));
+                        object.setSecurityMetadataSource(menuService
+                                .set(object.getSecurityMetadataSource())
+                                .set(accessDecisionManager())
+                        );
                         return object;
                     }
                 })
