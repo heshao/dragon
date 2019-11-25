@@ -14,3 +14,7 @@ spring:
     sql-dialect: MySQL
   thymeleaf:
     cache: false
+  jackson:
+    default-property-inclusion: non_null
+
+debug: false
