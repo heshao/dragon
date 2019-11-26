@@ -45,18 +45,19 @@ public class MenuService implements FilterInvocationSecurityMetadataSource {
 
     private AccessDecisionManager accessDecisionManager;
     private FilterInvocationSecurityMetadataSource securityMetadataSource;
-    private Map<RequestMatcher, Collection<ConfigAttribute>> requestMap;
+    private Map<RequestMatcher, Collection<ConfigAttribute>> requestMap = new HashMap<>(20);
+    ;
 
     /**
      * 初始化加载菜单权限
      */
     @PostConstruct
     public void init() {
-        requestMap = new HashMap<>(20);
+
         List<MenuRole> menuRoles = menuRoleRepository.findAll();
         menuRoles.forEach(menuRole -> {
             Menu menu = menuRole.getMenu();
-            if (!StringUtils.isEmpty(menu.getUri())) {
+            if (menu != null && !StringUtils.isEmpty(menu.getUri())) {
 
                 AntPathRequestMatcher requestMatcher = new AntPathRequestMatcher(menu.getUri());
                 Collection<ConfigAttribute> configAttributes;
@@ -84,7 +85,7 @@ public class MenuService implements FilterInvocationSecurityMetadataSource {
     public Optional<Menu> get(long id) {
         Optional<Menu> optional = menuRepository.findById(id);
         optional.ifPresent(menu -> {
-            List<MenuRole> menuRoles = menuRoleRepository.findByMenu_Id(id);
+            List<MenuRole> menuRoles = menuRoleRepository.findByMenuId(id);
             List<Role> roles = new ArrayList<>();
             menuRoles.forEach(menuRole -> roles.add(menuRole.getRole()));
             menu.setRoles(roles);
@@ -127,7 +128,7 @@ public class MenuService implements FilterInvocationSecurityMetadataSource {
     @Transactional(rollbackFor = Exception.class)
     public void save(Menu menu) {
         menuRepository.save(menu);
-        menuRoleRepository.deleteByMenu_Id(menu.getId());
+        menuRoleRepository.deleteByMenuId(menu.getId());
         Collection<Role> roles = menu.getRoles();
         roles.forEach(role -> {
             MenuRole menuRole = new MenuRole();
@@ -141,7 +142,7 @@ public class MenuService implements FilterInvocationSecurityMetadataSource {
     @Transactional(rollbackFor = Exception.class)
     public void delete(long id) {
         menuRepository.deleteById(id);
-        menuRoleRepository.deleteByMenu_Id(id);
+        menuRoleRepository.deleteByMenuId(id);
         refresh();
     }
 
