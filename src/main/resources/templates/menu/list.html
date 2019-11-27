@@ -119,11 +119,11 @@
             };
 
             //头工具栏事件
-            // table.on('toolbar(table)', function (obj) {
-            //     console.log(obj.event);
-            //     if ('add' === obj.event) open();
-            //
-            // });
+            table.on('toolbar(table)', function (obj) {
+                console.log(obj.event);
+                if ('add' === obj.event) openEdit();
+
+            });
 
             //监听提交
             form.on('submit', function (data) {
@@ -153,7 +153,7 @@
                         layer.close(index);
                     });
                 } else if (obj.event === 'edit') {
-                    open(data.id);
+                    openEdit(data.id);
                 }
             });
 
@@ -167,7 +167,7 @@
          * 打开新增或编辑页面
          * @param id
          */
-        function open(id) {
+        function openEdit(id) {
             var config = {
                 type: 2,
                 title: '编辑',
