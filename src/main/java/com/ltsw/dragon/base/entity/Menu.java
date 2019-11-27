@@ -20,9 +20,9 @@ public class Menu implements Tree<Menu> {
     private Long parentId;
     private String name;
     private String uri;
-    private Boolean enabled;
-    private Boolean visible;
-    private Integer sort;
+    private boolean enabled;
+    private boolean visible;
+    private int sort;
 
     @Transient
     private Collection<Role> roles;

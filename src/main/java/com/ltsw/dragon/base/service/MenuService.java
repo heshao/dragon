@@ -96,14 +96,20 @@ public class MenuService implements FilterInvocationSecurityMetadataSource {
         return optional;
     }
 
-    private Example<Menu> example(Menu filter) {
+    /**
+     * 分页查询菜单
+     *
+     * @param pageable 分页
+     * @param filter   过滤
+     * @return
+     */
+    public Page<Menu> findAll(Pageable pageable, Menu filter) {
         ExampleMatcher matcher = ExampleMatcher.matching();
         matcher.withMatcher("name", ExampleMatcher.GenericPropertyMatchers.contains());
-        return Example.of(filter, matcher);
-    }
-
-    public Page<Menu> findAll(Pageable pageable, Menu filter) {
-        return menuRepository.findAll(example(filter), pageable);
+        matcher.withIgnorePaths("enabled");
+        matcher.withIgnorePaths("visible");
+        matcher.withIgnorePaths("sort");
+        return menuRepository.findAll(Example.of(filter, matcher), pageable);
     }
 
     /**
@@ -117,7 +123,9 @@ public class MenuService implements FilterInvocationSecurityMetadataSource {
         Menu filter = new Menu();
         filter.setEnabled(true);
         filter.setVisible(true);
-        return menuRepository.findAll(example(filter)).stream().filter(menu -> {
+        ExampleMatcher matcher = ExampleMatcher.matching();
+        matcher.withIgnorePaths("sort");
+        return menuRepository.findAll(Example.of(filter, matcher)).stream().filter(menu -> {
             if (StringUtils.isEmpty(menu.getUri())) {
                 return true;
             }
@@ -135,16 +143,6 @@ public class MenuService implements FilterInvocationSecurityMetadataSource {
     @Transactional(rollbackFor = Exception.class)
     public void save(Menu menu) {
         menuRepository.save(menu);
-        //暂时取消角色关联保存
-//        menuRoleRepository.deleteByMenuId(menu.getId());
-//        Collection<Role> roles = menu.getRoles();
-//        roles.forEach(role -> {
-//            MenuRole menuRole = new MenuRole();
-//            menuRole.setMenu(menu);
-//            menuRole.setRole(role);
-//            menuRoleRepository.save(menuRole);
-//        });
-        refresh();
     }
 
     @Transactional(rollbackFor = Exception.class)
