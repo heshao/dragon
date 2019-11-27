@@ -82,7 +82,10 @@ public class MenuService implements FilterInvocationSecurityMetadataSource {
         log.info("刷新菜单权限——结束：耗时{}ms", end - start);
     }
 
-    public Optional<Menu> get(long id) {
+    public Optional<Menu> get(Long id) {
+        if (id == null) {
+            return Optional.empty();
+        }
         Optional<Menu> optional = menuRepository.findById(id);
         optional.ifPresent(menu -> {
             List<MenuRole> menuRoles = menuRoleRepository.findByMenuId(id);
@@ -128,14 +131,15 @@ public class MenuService implements FilterInvocationSecurityMetadataSource {
     @Transactional(rollbackFor = Exception.class)
     public void save(Menu menu) {
         menuRepository.save(menu);
-        menuRoleRepository.deleteByMenuId(menu.getId());
-        Collection<Role> roles = menu.getRoles();
-        roles.forEach(role -> {
-            MenuRole menuRole = new MenuRole();
-            menuRole.setMenu(menu);
-            menuRole.setRole(role);
-            menuRoleRepository.save(menuRole);
-        });
+        //暂时取消角色关联保存
+//        menuRoleRepository.deleteByMenuId(menu.getId());
+//        Collection<Role> roles = menu.getRoles();
+//        roles.forEach(role -> {
+//            MenuRole menuRole = new MenuRole();
+//            menuRole.setMenu(menu);
+//            menuRole.setRole(role);
+//            menuRoleRepository.save(menuRole);
+//        });
         refresh();
     }
 

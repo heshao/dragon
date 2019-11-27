@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.persistence.EntityNotFoundException;
@@ -35,7 +36,7 @@ public class MenuController {
     }
 
     @RequestMapping("edit")
-    public void edit(Long id, Model model) {
+    public void edit(@RequestParam(required = false) Long id, Model model) {
         Menu menu = menuService.get(id).orElseGet(Menu::new);
         List<Role> roles = roleService.findAll();
         model.addAttribute(menu);

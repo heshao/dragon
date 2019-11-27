@@ -6,6 +6,7 @@
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <title>菜单管理</title>
         <link rel="stylesheet" th:href="@{/layuiadmin/layui/css/layui.css}" media="all">
+        <link rel="stylesheet" th:href="@{/style/common.css}" media="all">
         <script th:src="@{/layuiadmin/layui/layui.js}"></script>
     </head>
     <body>
@@ -20,13 +21,29 @@
                         <!--                        <div class="layui-card-header"></div>-->
                         <div class="layui-card-body">
 
-                            <div class="test-table-reload-btn" style="margin-bottom: 10px;">
-                                搜索ID：
-                                <div class="layui-inline">
-                                    <input class="layui-input" name="id" id="test-table-demoReload" autocomplete="off">
+                            <form class="layui-form " style="margin-bottom: 10px;">
+
+                                <div class="pull-left ">
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">菜单名称：</label>
+                                        <div class="layui-input-inline">
+                                            <input class="layui-input" name="name" autocomplete="off">
+                                        </div>
+                                    </div>
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">可用：</label>
+                                        <div class="layui-input-inline">
+                                            <input type="checkbox" name="enabled" lay-skin="switch" lay-text="开启|关闭">
+                                        </div>
+                                    </div>
+
                                 </div>
-                                <button class="layui-btn" data-type="reload">搜索</button>
-                            </div>
+                                <div class="pull-right">
+                                    <div class="layui-inline">
+                                        <button class="layui-btn" lay-submit data-type="reload">搜索</button>
+                                    </div>
+                                </div>
+                            </form>
 
                             <table id="table" class="layui-table" lay-filter="table">
 
@@ -34,19 +51,28 @@
 
 
                         </div>
-
                     </div>
                 </div>
             </div>
         </div>
-
-
     </body>
-    <script th:src="@{/layuiadmin/layui/layui.js}"></script>
+
+    <script type="text/html" id="toolbar">
+        <div class="layui-btn-container">
+            <button class="layui-btn layui-btn-sm" lay-event="add">新增</button>
+        </div>
+    </script>
+
+    <script type="text/html" id="bar">
+        <a class="layui-btn layui-btn-xs" lay-event="info">详情</a>
+        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    </script>
     <script th:inline="javascript">
         var ctx = /*[[@{/}]]*/'';
 
-        layui.use("table", function () {
+        layui.use(['form', "table"], function () {
+            var form = layui.form;
             var table = layui.table;
 
             var cols = [];
@@ -56,11 +82,13 @@
                 {field: 'uri', title: '路径'},
                 {field: 'enabled', title: '可用'},
                 {field: 'visible', title: '可见'},
-                {field: 'sort', title: '排序'}
+                {field: 'sort', title: '排序'},
+                {fixed: 'right', title: '操作', toolbar: '#bar', width: '160'}
             ]);
 
             table.render({
                 elem: '#table'
+                , id: 'table'
                 , url: ctx + 'menu/search' //数据接口
                 , method: 'post'
                 , page: true //开启分页
@@ -73,7 +101,92 @@
                         "data": res.body.content //解析数据列表
                     };
                 }
+                , toolbar: '#toolbar'
             });
-        })
+
+            window.$ = layui.$;
+            var active = {
+                reload: function () {
+
+                    //执行重载
+                    table.reload('table', {
+                        page: {
+                            curr: 1 //重新从第 1 页开始
+                        }
+                        , where: {}
+                    }, 'data');
+                }
+            };
+
+            //头工具栏事件
+            // table.on('toolbar(table)', function (obj) {
+            //     console.log(obj.event);
+            //     if ('add' === obj.event) open();
+            //
+            // });
+
+            //监听提交
+            form.on('submit', function (data) {
+                console.log(data.field);
+                var type = $(this).data('type');
+                active[type] ? active[type].call(this) : '';
+                return false;
+            });
+
+            //监听行工具事件
+            table.on('tool(table)', function (obj) {
+                var data = obj.data;
+                console.log(obj);
+                if (obj.event === 'info') {
+                    layer.open({
+                        type: 2,
+                        content: ctx + 'menu/get?id=' + data.id,
+                        area: '500px'
+                    });
+                } else if (obj.event === 'del') {
+                    layer.confirm('真的删除行么', function (index) {
+                        $.get(ctx + 'menu/delete?id=' + data.id, function (data) {
+                            if (data.code === 0) {
+                                obj.del();
+                            }
+                        });
+                        layer.close(index);
+                    });
+                } else if (obj.event === 'edit') {
+                    open(data.id);
+                }
+            });
+
+        });
+
+        function reload() {
+            $("*[lay-submit]").click();
+        }
+
+        /**
+         * 打开新增或编辑页面
+         * @param id
+         */
+        function open(id) {
+            var config = {
+                type: 2,
+                title: '编辑',
+                content: ctx + 'menu/edit?id=' + id,
+                area: ['50%', '80%'],
+                btn: ['确认', '取消'],
+                yes: function (index, layero) {
+                    var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+                    iframeWin.submit();
+                }
+            };
+
+            if (!id) {
+                $.extend(config, {
+                    title: '新增',
+                    content: ctx + 'menu/edit'
+                })
+            }
+            layer.open(config);
+        }
     </script>
 </html>

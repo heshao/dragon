@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Document</title>
+        <link rel="stylesheet" th:href="@{/layuiadmin/layui/css/layui.css}" media="all">
+        <script th:src="@{/layuiadmin/layui/layui.js}"></script>
+    </head>
+    <body>
+        <div class="layui-fluid " style="margin: 15px">
+            <div class="layui-row layui-col-space15">
+                <form class="layui-form" action="">
+                    <input type="hidden" name="id" th:value="${menu.id}">
+                    <div class="layui-form-item">
+
+                        <label class="layui-form-label">父ID</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="parentId" th:value="${menu.parentId}" required lay-verify="required" placeholder="请输入父ID" autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">菜单名称</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="name" th:value="${menu.name}" required lay-verify="required" placeholder="请输入菜单名称" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">菜单路径</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="uri" th:value="${menu.uri}" required lay-verify="required" placeholder="请输入菜单路径" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">可用</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" name="enabled" th:checked="${menu.enabled}" lay-skin="switch" lay-text="开启|关闭">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">可见</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" name="visible" th:checked="${menu.visible}" lay-skin="switch" lay-text="开启|关闭">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">排序</label>
+                        <div class="layui-input-block">
+                            <input type="number" name="sort" th:value="${menu.sort}" required lay-verify="required" placeholder="请输入排序" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn layui-hide" lay-submit lay-filter="form">立即提交</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <script th:inline="javascript">
+            var ctx = /*[[@{/}]]*/'';
+
+            layui.use('form', function () {
+                var form = layui.form;
+                window.$ = layui.$;
+                //监听提交
+                form.on('submit(form)', function (data) {
+                    console.log(data.field);
+                    $.post(ctx + "menu/save", data.field, function (res) {
+                        if (res.code === 0) {
+                            //重载父页面
+                            parent.reload();
+                            //当你在iframe页面关闭自身时
+                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                            parent.layer.close(index); //再执行关闭
+                        }
+                    });
+
+                    return false;
+                });
+
+            });
+
+            function submit() {
+                $("*[lay-submit]").click();
+            }
+        </script>
+    </body>
+</html>
