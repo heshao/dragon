@@ -96,8 +96,14 @@ public class MenuService implements FilterInvocationSecurityMetadataSource {
         return optional;
     }
 
-    public Page<Menu> findAll(Pageable pageable) {
-        return menuRepository.findAll(pageable);
+    private Example<Menu> example(Menu filter) {
+        ExampleMatcher matcher = ExampleMatcher.matching();
+        matcher.withMatcher("name", ExampleMatcher.GenericPropertyMatchers.contains());
+        return Example.of(filter, matcher);
+    }
+
+    public Page<Menu> findAll(Pageable pageable, Menu filter) {
+        return menuRepository.findAll(example(filter), pageable);
     }
 
     /**
@@ -111,9 +117,7 @@ public class MenuService implements FilterInvocationSecurityMetadataSource {
         Menu filter = new Menu();
         filter.setEnabled(true);
         filter.setVisible(true);
-        ExampleMatcher matcher = ExampleMatcher.matching().withIgnorePaths("sort");
-        Example<Menu> ex = Example.of(filter, matcher);
-        return menuRepository.findAll(ex).stream().filter(menu -> {
+        return menuRepository.findAll(example(filter)).stream().filter(menu -> {
             if (StringUtils.isEmpty(menu.getUri())) {
                 return true;
             }

@@ -21,7 +21,7 @@
                         <!--                        <div class="layui-card-header"></div>-->
                         <div class="layui-card-body">
 
-                            <form class="layui-form " style="margin-bottom: 10px;">
+                            <form class="layui-form " style="margin-bottom: 10px;" lay-filter="search-from">
 
                                 <div class="pull-left ">
                                     <div class="layui-inline">
@@ -30,17 +30,10 @@
                                             <input class="layui-input" name="name" autocomplete="off">
                                         </div>
                                     </div>
-                                    <div class="layui-inline">
-                                        <label class="layui-form-label">可用：</label>
-                                        <div class="layui-input-inline">
-                                            <input type="checkbox" name="enabled" lay-skin="switch" lay-text="开启|关闭">
-                                        </div>
-                                    </div>
-
                                 </div>
                                 <div class="pull-right">
                                     <div class="layui-inline">
-                                        <button class="layui-btn" lay-submit data-type="reload">搜索</button>
+                                        <button class="layui-btn" data-type="reload">搜索</button>
                                     </div>
                                 </div>
                             </form>
@@ -107,16 +100,22 @@
             window.$ = layui.$;
             var active = {
                 reload: function () {
-
+                    var data = form.val("search-from");
                     //执行重载
                     table.reload('table', {
                         page: {
                             curr: 1 //重新从第 1 页开始
                         }
-                        , where: {}
+                        , where: $.extend({}, data)
                     }, 'data');
                 }
             };
+
+            //表格重载事件
+            $('.layui-form .layui-btn').on('click', function () {
+                var type = $(this).data('type');
+                active[type] ? active[type].call(this) : '';
+            });
 
             //头工具栏事件
             table.on('toolbar(table)', function (obj) {
@@ -128,8 +127,6 @@
             //监听提交
             form.on('submit', function (data) {
                 console.log(data.field);
-                var type = $(this).data('type');
-                active[type] ? active[type].call(this) : '';
                 return false;
             });
 
@@ -160,7 +157,7 @@
         });
 
         function reload() {
-            $("*[lay-submit]").click();
+            $('.layui-form .layui-btn').click();
         }
 
         /**

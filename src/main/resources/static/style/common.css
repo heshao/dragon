@@ -1,0 +1,12 @@
+.pull-left {
+    float: left !important;
+}
+
+.pull-right {
+    float: right !important;
+}
+
+.pull-left > .layui-inline > .layui-form-label {
+    min-width: 80px;
+    width: auto;
+}

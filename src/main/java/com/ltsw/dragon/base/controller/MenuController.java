@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -49,8 +50,12 @@ public class MenuController {
 
     @RequestMapping("search")
     @ResponseBody
-    public ResponseEntity search(int page, int limit) {
-        Page<Menu> menuPage = menuService.findAll(PageRequest.of(page - 1, limit));
+    public ResponseEntity search(int page, int limit, String name) {
+        Menu menu = new Menu();
+        if (!StringUtils.isEmpty(name)) {
+            menu.setName(name);
+        }
+        Page<Menu> menuPage = menuService.findAll(PageRequest.of(page - 1, limit), menu);
         return ResponseEntity.success(menuPage);
     }
 
