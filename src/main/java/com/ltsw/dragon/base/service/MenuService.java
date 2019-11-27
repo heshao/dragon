@@ -100,16 +100,14 @@ public class MenuService implements FilterInvocationSecurityMetadataSource {
      * 分页查询菜单
      *
      * @param pageable 分页
-     * @param filter   过滤
+     * @param name   菜单名称
      * @return
      */
-    public Page<Menu> findAll(Pageable pageable, Menu filter) {
-        ExampleMatcher matcher = ExampleMatcher.matching();
-        matcher.withMatcher("name", ExampleMatcher.GenericPropertyMatchers.contains());
-        matcher.withIgnorePaths("enabled");
-        matcher.withIgnorePaths("visible");
-        matcher.withIgnorePaths("sort");
-        return menuRepository.findAll(Example.of(filter, matcher), pageable);
+    public Page<Menu> findAll(Pageable pageable, String name) {
+        if (StringUtils.isEmpty(name)) {
+            return menuRepository.findAll(pageable);
+        }
+        return menuRepository.findByNameLike(name, pageable);
     }
 
     /**
@@ -123,8 +121,8 @@ public class MenuService implements FilterInvocationSecurityMetadataSource {
         Menu filter = new Menu();
         filter.setEnabled(true);
         filter.setVisible(true);
-        ExampleMatcher matcher = ExampleMatcher.matching();
-        matcher.withIgnorePaths("sort");
+        ExampleMatcher matcher = ExampleMatcher.matching()
+                .withIgnorePaths("sort");
         return menuRepository.findAll(Example.of(filter, matcher)).stream().filter(menu -> {
             if (StringUtils.isEmpty(menu.getUri())) {
                 return true;
