@@ -60,7 +60,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private void load(Optional<User> optional) {
         optional.ifPresent(user -> {
             List<Role> roles = new ArrayList<>();
-            List<UserRole> list = userRoleRepository.findByUser_Id(user.getId());
+            List<UserRole> list = userRoleRepository.findByUserId(user.getId());
             list.forEach(userRole -> roles.add(userRole.getRole()));
             user.setAuthorities(roles);
         });
@@ -74,7 +74,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
-        userRoleRepository.deleteByUser_Id(user.getId());
+        userRoleRepository.deleteByUserId(user.getId());
         Collection<? extends GrantedAuthority> roles = user.getAuthorities();
         if (!roles.isEmpty()) {
             roles.forEach(o -> {
@@ -106,8 +106,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void delete(long id) {
+    public void delete(Long id) {
         userRepository.deleteById(id);
-        userRoleRepository.deleteByUser_Id(id);
+        userRoleRepository.deleteByUserId(id);
     }
 }

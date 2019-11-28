@@ -28,7 +28,7 @@ public class RoleService {
     @Autowired
     private UserRoleRepository userRoleRepository;
 
-    public Optional<Role> get(long id) {
+    public Optional<Role> get(Long id) {
         return roleRepository.findById(id);
     }
 
@@ -68,9 +68,9 @@ public class RoleService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void delete(long id) {
+    public void delete(Long id) {
         roleRepository.deleteById(id);
-        menuRoleRepository.deleteByRole_Id(id);
-        userRoleRepository.deleteByRole_Id(id);
+        menuRoleRepository.deleteByRoleId(id);
+        userRoleRepository.deleteByRoleId(id);
     }
 }

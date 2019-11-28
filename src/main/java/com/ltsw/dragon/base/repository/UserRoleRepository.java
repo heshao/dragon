@@ -19,19 +19,20 @@ public interface UserRoleRepository extends JpaRepository<UserRole, Long> {
      * @param userId 用户Id
      * @return
      */
-    List<UserRole> findByUser_Id(long userId);
+    List<UserRole> findByUserId(Long userId);
 
     /**
      * 删除用户角色关系
      *
      * @param userId 用户Id
      */
-    void deleteByUser_Id(long userId);
+    void deleteByUserId(Long userId);
 
     /**
      * 删除用户角色关系
      *
      * @param roleId 角色Id
      */
-    void deleteByRole_Id(long roleId);
+    void deleteByRoleId(Long roleId);
+
 }
