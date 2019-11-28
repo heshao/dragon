@@ -6,6 +6,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 /**
  * @author heshaobing
  */
@@ -20,4 +22,12 @@ public interface MenuRepository extends JpaRepository<Menu,Long> {
      * @return
      */
     Page<Menu> findByNameLike(String name, Pageable pageable);
+
+    /**
+     * 获取菜单
+     *
+     * @param uri 路径
+     * @return
+     */
+    Optional<Menu> findFirstByUri(String uri);
 }

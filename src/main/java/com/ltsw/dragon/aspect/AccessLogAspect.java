@@ -3,6 +3,7 @@ package com.ltsw.dragon.aspect;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ltsw.dragon.base.entity.AccessLog;
 import com.ltsw.dragon.base.service.AccessLogService;
+import com.ltsw.dragon.base.service.MenuService;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -28,6 +29,8 @@ public class AccessLogAspect {
     @Autowired
     private AccessLogService accessLogService;
     @Autowired
+    private MenuService menuService;
+    @Autowired
     private ObjectMapper objectMapper;
 
     @Pointcut("execution(* com.ltsw.dragon..controller.*.*(..))")
@@ -41,8 +44,9 @@ public class AccessLogAspect {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         assert attributes != null;
         HttpServletRequest request = attributes.getRequest();
-        String title = "";
+
         String uri = request.getRequestURI();
+        String title = menuService.getNameByUri(uri);
         String params = objectMapper.writeValueAsString(request.getParameterMap());
         String ip = request.getRemoteAddr();
         String httpMethod = request.getMethod();

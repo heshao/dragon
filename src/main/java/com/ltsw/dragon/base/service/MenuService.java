@@ -144,7 +144,7 @@ public class MenuService implements FilterInvocationSecurityMetadataSource {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void delete(long id) {
+    public void delete(Long id) {
         menuRepository.deleteById(id);
         menuRoleRepository.deleteByMenuId(id);
         refresh();
@@ -188,5 +188,17 @@ public class MenuService implements FilterInvocationSecurityMetadataSource {
     @Override
     public boolean supports(Class<?> clazz) {
         return FilterInvocation.class.isAssignableFrom(clazz);
+    }
+
+    /**
+     * 获取菜单名称
+     *
+     * @param uri 路径
+     * @return
+     */
+    public String getNameByUri(String uri) {
+        Optional<Menu> optional = menuRepository.findFirstByUri(uri);
+        Optional<String> name = Optional.of(optional.orElseGet(Menu::new).getName());
+        return name.orElse(uri);
     }
 }
