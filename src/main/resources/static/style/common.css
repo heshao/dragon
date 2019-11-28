@@ -6,7 +6,15 @@
     float: right !important;
 }
 
+.pull-left > .layui-inline {
+    margin-bottom: 10px;
+}
+
 .pull-left > .layui-inline > .layui-form-label {
     min-width: 80px;
     width: auto;
+}
+
+.pull-right > .layui-inline {
+    margin-bottom: 10px;
 }
