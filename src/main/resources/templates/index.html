@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta charset="utf-8">
@@ -54,7 +54,7 @@
         </li>
         <li class="layui-nav-item" style="margin-right: 20px" lay-unselect="">
           <a href="javascript:;">
-            <cite>贤心</cite>
+              <cite sec:authentication="name"></cite>
             <span class="layui-nav-more"></span>
           </a>
           <dl class="layui-nav-child">
@@ -190,7 +190,6 @@
   }).extend({
     index: 'lib/index' //主入口模块
   }).use('index');
-
 
 </script>
 
