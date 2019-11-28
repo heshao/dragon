@@ -13,6 +13,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
@@ -34,6 +35,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private UserDetailsServiceImpl userDetailsService;
     @Autowired
     private MenuService menuService;
+    private AccessDecisionManager accessDecisionManager;
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        super.configure(web);
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -47,10 +54,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
                     @Override
                     public <O extends FilterSecurityInterceptor> O postProcess(O object) {
-                        object.setSecurityMetadataSource(menuService
-                                .set(object.getSecurityMetadataSource())
+                        object.setSecurityMetadataSource(menuService.set(object.getSecurityMetadataSource())
                                 .set(accessDecisionManager())
                         );
+                        object.setAccessDecisionManager(accessDecisionManager());
                         return object;
                     }
                 })
@@ -81,16 +88,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      * @return
      */
     private AccessDecisionManager accessDecisionManager() {
-        List<AccessDecisionVoter<?>> decisionVoters = new ArrayList<>();
-        RoleVoter roleVoter = new RoleVoter();
-        roleVoter.setRolePrefix("");
-        decisionVoters.add(roleVoter);
+        if (accessDecisionManager == null) {
 
-        WebExpressionVoter expressionVoter = new WebExpressionVoter();
-        expressionVoter.setExpressionHandler(new DefaultWebSecurityExpressionHandler());
-        decisionVoters.add(expressionVoter);
 
-        return new AffirmativeBased(decisionVoters);
+            List<AccessDecisionVoter<?>> decisionVoters = new ArrayList<>();
+            RoleVoter roleVoter = new RoleVoter();
+            roleVoter.setRolePrefix("");
+            decisionVoters.add(roleVoter);
+
+            WebExpressionVoter expressionVoter = new WebExpressionVoter();
+            expressionVoter.setExpressionHandler(new DefaultWebSecurityExpressionHandler());
+            decisionVoters.add(expressionVoter);
+            accessDecisionManager = new AffirmativeBased(decisionVoters);
+        }
+        return accessDecisionManager;
     }
 
     /**
