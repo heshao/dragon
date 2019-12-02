@@ -6,9 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author heshaobing
@@ -19,12 +20,20 @@ public class DepartmentService {
     @Autowired
     private DepartmentRepository repository;
 
-    public Department get(long id) {
-        return repository.findById(id).orElseThrow(EntityNotFoundException::new);
+
+    public Optional<Department> get(Long id) {
+        if (id == null) {
+            return Optional.empty();
+        }
+
+        return repository.findById(id);
     }
 
-    public List<Department> findAll() {
-        return repository.findAll();
+    public Page<Department> findAll(Pageable pageable, String name) {
+        if (StringUtils.isEmpty(name)) {
+            return repository.findAll(pageable);
+        }
+        return repository.findByNameLike(name, pageable);
     }
 
     public Page<Department> findAll(Pageable pageable) {
@@ -35,7 +44,12 @@ public class DepartmentService {
         repository.save(department);
     }
 
-    public void delete(long id) {
+    public void delete(Long id) {
         repository.deleteById(id);
     }
+
+    public List<Department> findAll() {
+        return repository.findAll();
+    }
+
 }
