@@ -22,6 +22,9 @@ public class Role implements GrantedAuthority {
     private String role;
     private String description;
 
+    @Transient
+    private boolean checked;
+
     @Override
     public String getAuthority() {
         return role;
