@@ -198,7 +198,7 @@ public class MenuService implements FilterInvocationSecurityMetadataSource {
      */
     public String getNameByUri(String uri) {
         Optional<Menu> optional = menuRepository.findFirstByUri(uri);
-        Optional<String> name = Optional.of(optional.orElseGet(Menu::new).getName());
-        return name.orElse(uri);
+        String name = optional.orElseGet(Menu::new).getName();
+        return StringUtils.isEmpty(name) ? uri : name;
     }
 }
