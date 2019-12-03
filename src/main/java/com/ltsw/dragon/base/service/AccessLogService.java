@@ -36,6 +36,10 @@ public class AccessLogService {
     public Page<AccessLog> findAll(Pageable pageable, AccessLog accessLog) {
         return accessLogRepository.findAll((root, query, cb) -> {
             List<Predicate> predicateList = new ArrayList<>();
+            if (!StringUtils.isEmpty(accessLog.getTitle())) {
+                Predicate predicate = cb.like(root.get("title"), accessLog.getTitle());
+                predicateList.add(predicate);
+            }
             if (!StringUtils.isEmpty(accessLog.getIp())) {
                 Predicate predicate = cb.equal(root.get("ip"), accessLog.getIp());
                 predicateList.add(predicate);
