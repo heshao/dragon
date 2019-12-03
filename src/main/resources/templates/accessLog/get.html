@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>部门管理详情页面</title>
+    <link rel="stylesheet" th:href="@{/layuiadmin/layui/css/layui.css}" media="all">
+    <script th:src="@{/layuiadmin/layui/layui.js}"></script>
+</head>
+<body>
+
+<div class="layui-fluid " style="margin: 15px">
+    <table class="layui-hide" lay-filter="info">
+        <thead>
+        <tr>
+            <th lay-data="{field:'name', width:100}">编号</th>
+            <th lay-data="{field:'value'}">[[${accessLog.id}]]</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>标题</td>
+            <td>[[${accessLog.title}]]</td>
+        </tr>
+        <tr>
+            <td>请求方式</td>
+            <td>[[${accessLog.httpMethod}]]</td>
+        </tr>
+        <tr>
+            <td>访问路径</td>
+            <td>[[${accessLog.uri}]]</td>
+        </tr>
+        <tr>
+            <td>参数</td>
+            <td>[[${accessLog.params}]]</td>
+        </tr>
+        <tr>
+            <td>请求方法</td>
+            <td>[[${accessLog.method}]]</td>
+        </tr>
+        <tr>
+            <td>异常</td>
+            <td>[[${accessLog.exception}]]</td>
+        </tr>
+        <tr>
+            <td>访客ip</td>
+            <td>[[${accessLog.ip}]]</td>
+        </tr>
+        <tr>
+            <td>耗时</td>
+            <td>[[${accessLog.take}]]ms</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script>
+    layui.use('table', function () {
+        var table = layui.table;
+
+        //转换静态表格
+        table.init('info', {});
+    });
+
+</script>
+</body>
+</html>

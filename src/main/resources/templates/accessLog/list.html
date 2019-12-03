@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>日志列表页面</title>
+    <link rel="stylesheet" th:href="@{/layuiadmin/layui/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/style/common.css}" media="all">
+    <script th:src="@{/layuiadmin/layui/layui.js}"></script>
+</head>
+<body>
+
+<div class="layui-card ">
+</div>
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <!--                        <div class="layui-card-header"></div>-->
+                <div class="layui-card-body">
+
+                    <form class="layui-form " lay-filter="search-from">
+
+                        <div class="pull-left ">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">标题：</label>
+                                <div class="layui-input-inline">
+                                    <input class="layui-input" name="title" autocomplete="off">
+                                </div>
+                            </div>
+
+                            <div class="layui-inline">
+                                <label class="layui-form-label">请求方式：</label>
+                                <div class="layui-input-inline">
+                                    <select name="httpMethod">
+                                        <option value="">请选择</option>
+                                        <option value="POST">POST</option>
+                                        <option value="GET">GET</option>
+                                        <option value="HEAD">HEAD</option>
+                                        <option value="PUT">PUT</option>
+                                        <option value="PATCH">PATCH</option>
+                                        <option value="DELETE">DELETE</option>
+                                        <option value="OPTIONS">OPTIONS</option>
+                                        <option value="TRACE">TRACE</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="layui-inline">
+                                <label class="layui-form-label">访问路径：</label>
+                                <div class="layui-input-inline">
+                                    <input class="layui-input" name="uri" autocomplete="off">
+                                </div>
+                            </div>
+
+                            <div class="layui-inline">
+                                <label class="layui-form-label">访客IP：</label>
+                                <div class="layui-input-inline">
+                                    <input class="layui-input" name="ip" autocomplete="off">
+                                </div>
+                            </div>
+
+
+                            <div class="layui-inline">
+                                <label class="layui-form-label">日期：</label>
+                                <div class="layui-input-inline">
+                                    <input class="layui-input" name="createTime" id="createTime" autocomplete="off">
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                        <div class="pull-right">
+                            <div class="layui-inline">
+                                <button class="layui-btn" lay-submit data-type="reload">搜索</button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <table id="table" class="layui-table" lay-filter="table">
+
+                    </table>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+
+<script>
+    layui.use('laydate', function () {
+        var laydate = layui.laydate;
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#createTime' //指定元素
+        });
+    });
+</script>
+
+<script type="text/html" id="bar">
+    <a sec:authorize-url="/accesslog/get" class="layui-btn layui-btn-xs" lay-event="info">详情</a>
+</script>
+<script th:inline="javascript">
+    var ctx = /*[[@{/}]]*/'';
+    layui.use('table', function () {
+        var form = layui.form;
+        var table = layui.table;
+        var util = layui.util;
+        var cols = [];
+        cols.push([
+            {field: 'title', title: '标题'}
+            , {field: 'httpMethod', title: '请求方式'}
+            , {field: 'uri', title: '访问路径'}
+            , {field: 'ip', title: '访客IP', sort: true}
+            , {
+                field: 'take', title: '耗时', templet: function (d) {
+                    return d.take + "ms";
+                }
+            }
+            , {
+                field: 'createTime', title: '创建时间', templet: function (d) {
+                    return util.toDateString(d.createTime, "yyyy-MM-dd HH:mm:ss");
+                }
+            }
+            , {fixed: 'right', title: '操作', toolbar: '#bar', width: '160'}
+        ]);
+        //第一个实例
+        table.render({
+            elem: '#table'
+            , url: ctx + 'accessLog/search' //数据接口
+            , page: true
+            , cols: cols
+            , method: 'post'
+            , parseData: function (res) {
+                //console.log(res.data);
+                return {
+                    "code": res.code,
+                    "msg": res.message, //解析提示文本
+                    "count": res.body.totalElements,
+                    "data": res.body.content
+
+                }
+            }
+            , toolbar: '#toolbar'
+        });
+
+        window.$ = layui.$;
+        var active = {
+            reload: function () {
+                var data = form.val("search-from");
+                //执行重载
+                table.reload('table', {
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    }
+                    , where: $.extend({}, data)
+                }, 'data');
+            }
+        };
+
+        //表格重载事件
+        $('.layui-form .layui-btn').on('click', function () {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+
+        //头工具栏事件
+        table.on('toolbar(table)', function (obj) {
+            console.log(obj.event);
+            if ('add' === obj.event) openEdit();
+
+        });
+
+        //监听提交
+        form.on('submit', function (data) {
+            console.log(data.field);
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+            return false;
+        });
+
+        //监听行工具事件
+        table.on('tool(table)', function (obj) {
+            var data = obj.data;
+            console.log(obj);
+            if (obj.event === 'info') {
+                layer.open({
+                    type: 2,
+                    title: "详情",
+                    content: ctx + 'accessLog/get?id=' + data.id,
+                    area: ['500px', '80%']
+                });
+            } else if (obj.event === 'del') {
+                layer.confirm('真的删除行么', function (index) {
+                    $.get(ctx + 'department/delete?id=' + data.id, function (data) {
+                        if (data.code === 0) {
+                            obj.del();
+                        }
+                    });
+                    layer.close(index);
+                });
+            } else if (obj.event === 'edit') {
+                openEdit(data.id);
+            }
+        });
+
+    });
+
+    function reload() {
+        $("*[lay-submit]").click();
+    }
+
+
+</script>
+</html>
