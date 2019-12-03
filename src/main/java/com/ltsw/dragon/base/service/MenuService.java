@@ -5,49 +5,35 @@ import com.ltsw.dragon.base.entity.MenuRole;
 import com.ltsw.dragon.base.entity.Role;
 import com.ltsw.dragon.base.repository.MenuRepository;
 import com.ltsw.dragon.base.repository.MenuRoleRepository;
-import lombok.extern.slf4j.Slf4j;
+import com.ltsw.dragon.base.security.SecurityMetadataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.access.AccessDecisionManager;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.access.ConfigAttribute;
-import org.springframework.security.access.SecurityConfig;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.FilterInvocation;
-import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
  * @author heshaobing
  */
-@Slf4j
 @Service
 @Transactional(readOnly = true)
-public class MenuService implements FilterInvocationSecurityMetadataSource {
+public class MenuService {
 
     @Autowired
     private MenuRepository menuRepository;
     @Autowired
     private MenuRoleRepository menuRoleRepository;
-
-    private AccessDecisionManager accessDecisionManager;
-    private FilterInvocationSecurityMetadataSource securityMetadataSource;
-    private Map<RequestMatcher, Collection<ConfigAttribute>> requestMap = new HashMap<>(20);
-    ;
-
+    @Autowired
+    private SecurityMetadataSource metadataSource;
     /**
      * 初始化加载菜单权限
      */
@@ -55,31 +41,8 @@ public class MenuService implements FilterInvocationSecurityMetadataSource {
     public void init() {
 
         List<MenuRole> menuRoles = menuRoleRepository.findAll();
-        menuRoles.forEach(menuRole -> {
-            Menu menu = menuRole.getMenu();
-            if (menu != null && !StringUtils.isEmpty(menu.getUri())) {
+        metadataSource.put(menuRoles);
 
-                AntPathRequestMatcher requestMatcher = new AntPathRequestMatcher(menu.getUri());
-                Collection<ConfigAttribute> configAttributes;
-                if (requestMap.containsKey(requestMatcher)) {
-                    configAttributes = requestMap.get(requestMatcher);
-                } else {
-                    configAttributes = new ArrayList<>();
-                    requestMap.put(requestMatcher, configAttributes);
-                }
-                configAttributes.addAll(SecurityConfig.createList(menuRole.getRole().getAuthority()));
-            }
-        });
-
-    }
-
-    public void refresh() {
-        log.info("刷新菜单权限——开始");
-        long start = System.currentTimeMillis();
-        requestMap.clear();
-        init();
-        long end = System.currentTimeMillis();
-        log.info("刷新菜单权限——结束：耗时{}ms", end - start);
     }
 
     public Optional<Menu> get(Long id) {
@@ -117,7 +80,7 @@ public class MenuService implements FilterInvocationSecurityMetadataSource {
      * @return
      */
     public List<Menu> findAllWithGranted() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
         Menu filter = new Menu();
         filter.setEnabled(true);
         filter.setVisible(true);
@@ -127,67 +90,29 @@ public class MenuService implements FilterInvocationSecurityMetadataSource {
             if (StringUtils.isEmpty(menu.getUri())) {
                 return true;
             }
-            FilterInvocation object = new FilterInvocation(menu.getUri(), "");
-            Collection<ConfigAttribute> attributes = getAttributes(object);
-            try {
-                accessDecisionManager.decide(authentication, object, attributes);
-                return true;
-            } catch (AccessDeniedException accessDeniedException) {
-                return false;
-            }
+            return metadataSource.decide(menu.getUri());
         }).collect(Collectors.toList());
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = RuntimeException.class)
     public void save(Menu menu) {
+
         menuRepository.save(menu);
+        List<MenuRole> menuRoles = menuRoleRepository.findByMenuId(menu.getId());
+        metadataSource.put(menuRoles);
+        throw new RuntimeException();
     }
 
     @Transactional(rollbackFor = Exception.class)
     public void delete(Long id) {
-        menuRepository.deleteById(id);
-        menuRoleRepository.deleteByMenuId(id);
-        refresh();
-    }
+        Optional<Menu> optional = menuRepository.findById(id);
+        optional.ifPresent(menu -> {
+            menuRepository.delete(menu);
+            menuRoleRepository.deleteByMenuId(id);
+            metadataSource.remove(menu);
+        });
 
-    public MenuService set(FilterInvocationSecurityMetadataSource securityMetadataSource) {
-        this.securityMetadataSource = securityMetadataSource;
-        return this;
-    }
-
-    public MenuService set(AccessDecisionManager accessDecisionManager) {
-        this.accessDecisionManager = accessDecisionManager;
-        return this;
-    }
-
-
-    @Override
-    public Collection<ConfigAttribute> getAllConfigAttributes() {
-        Set<ConfigAttribute> allAttributes = new HashSet<>();
-
-        for (Map.Entry<RequestMatcher, Collection<ConfigAttribute>> entry : requestMap
-                .entrySet()) {
-            allAttributes.addAll(entry.getValue());
-        }
-
-        return allAttributes;
-    }
-
-    @Override
-    public Collection<ConfigAttribute> getAttributes(Object object) {
-        final HttpServletRequest request = ((FilterInvocation) object).getRequest();
-        for (Map.Entry<RequestMatcher, Collection<ConfigAttribute>> entry : requestMap
-                .entrySet()) {
-            if (entry.getKey().matches(request)) {
-                return entry.getValue();
-            }
-        }
-        return this.securityMetadataSource.getAttributes(object);
-    }
-
-    @Override
-    public boolean supports(Class<?> clazz) {
-        return FilterInvocation.class.isAssignableFrom(clazz);
+        throw new RuntimeException();
     }
 
     /**
@@ -201,4 +126,6 @@ public class MenuService implements FilterInvocationSecurityMetadataSource {
         String name = optional.orElseGet(Menu::new).getName();
         return StringUtils.isEmpty(name) ? uri : name;
     }
+
+
 }

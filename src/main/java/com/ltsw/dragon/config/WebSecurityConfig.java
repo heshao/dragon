@@ -1,7 +1,7 @@
 package com.ltsw.dragon.config;
 
 import com.ltsw.dragon.base.security.DefaultFilterSecurityInterceptor;
-import com.ltsw.dragon.base.service.MenuService;
+import com.ltsw.dragon.base.security.SecurityMetadataSource;
 import com.ltsw.dragon.base.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -34,7 +34,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
     @Autowired
-    private MenuService menuService;
+    private SecurityMetadataSource metadataSource;
     private AccessDecisionManager accessDecisionManager;
 
     @Override
@@ -54,7 +54,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
                     @Override
                     public <O extends FilterSecurityInterceptor> O postProcess(O object) {
-                        object.setSecurityMetadataSource(menuService.set(object.getSecurityMetadataSource())
+                        object.setSecurityMetadataSource(metadataSource.set(object.getSecurityMetadataSource())
                                 .set(accessDecisionManager())
                         );
                         object.setAccessDecisionManager(accessDecisionManager());
@@ -70,7 +70,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .rememberMeCookieName("remember-me-cookie-name")
                 .tokenValiditySeconds(24 * 60 * 60);
 
-        DefaultFilterSecurityInterceptor defaultFilterSecurityInterceptor = createFilterSecurityInterceptor(menuService, accessDecisionManager(), authenticationManager());
+        DefaultFilterSecurityInterceptor defaultFilterSecurityInterceptor = createFilterSecurityInterceptor(metadataSource, accessDecisionManager(), authenticationManager());
         http.addFilterAt(defaultFilterSecurityInterceptor, FilterSecurityInterceptor.class);
 
         // @formatter:on
@@ -87,10 +87,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      *
      * @return
      */
-    private AccessDecisionManager accessDecisionManager() {
+    public AccessDecisionManager accessDecisionManager() {
+
         if (accessDecisionManager == null) {
-
-
             List<AccessDecisionVoter<?>> decisionVoters = new ArrayList<>();
             RoleVoter roleVoter = new RoleVoter();
             roleVoter.setRolePrefix("");
@@ -101,6 +100,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             decisionVoters.add(expressionVoter);
             accessDecisionManager = new AffirmativeBased(decisionVoters);
         }
+
         return accessDecisionManager;
     }
 
@@ -122,7 +122,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         securityInterceptor.afterPropertiesSet();
         return securityInterceptor;
     }
-
 
 
 }
