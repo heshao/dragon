@@ -183,8 +183,6 @@
         //监听提交
         form.on('submit', function (data) {
             console.log(data.field);
-            var type = $(this).data('type');
-            active[type] ? active[type].call(this) : '';
             return false;
         });
 
