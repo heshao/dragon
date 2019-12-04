@@ -70,7 +70,7 @@ public class MenuService {
         if (StringUtils.isEmpty(name)) {
             return menuRepository.findAll(pageable);
         }
-        return menuRepository.findByNameLike(name, pageable);
+        return menuRepository.findByNameContains(name, pageable);
     }
 
     /**
@@ -94,7 +94,7 @@ public class MenuService {
         }).collect(Collectors.toList());
     }
 
-    @Transactional(rollbackFor = RuntimeException.class)
+    @Transactional(rollbackFor = Exception.class)
     public void save(Menu menu) {
 
         menuRepository.save(menu);

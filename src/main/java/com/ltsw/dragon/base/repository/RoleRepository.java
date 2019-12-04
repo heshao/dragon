@@ -36,6 +36,6 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
      * @param pageable 分页
      * @return
      */
-    Page<Role> findByNameLike(String name, Pageable pageable);
+    Page<Role> findByNameContains(String name, Pageable pageable);
 
 }

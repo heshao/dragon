@@ -21,7 +21,7 @@ public interface MenuRepository extends JpaRepository<Menu,Long> {
      * @param pageable 分页
      * @return
      */
-    Page<Menu> findByNameLike(String name, Pageable pageable);
+    Page<Menu> findByNameContains(String name, Pageable pageable);
 
     /**
      * 获取菜单

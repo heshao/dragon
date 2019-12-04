@@ -18,5 +18,5 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
      * @param pageable 分页
      * @return
      */
-    Page<Department> findByNameLike(String name, Pageable pageable);
+    Page<Department> findByNameContains(String name, Pageable pageable);
 }

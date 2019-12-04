@@ -33,7 +33,7 @@ public class DepartmentService {
         if (StringUtils.isEmpty(name)) {
             return repository.findAll(pageable);
         }
-        return repository.findByNameLike(name, pageable);
+        return repository.findByNameContains(name, pageable);
     }
 
     public Page<Department> findAll(Pageable pageable) {

@@ -41,7 +41,7 @@ public class RoleService {
         if (StringUtils.isEmpty(name)) {
             return roleRepository.findAll(pageable);
         }
-        return roleRepository.findByNameLike(name, pageable);
+        return roleRepository.findByNameContains(name, pageable);
     }
 
 

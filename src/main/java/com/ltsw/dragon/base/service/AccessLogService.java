@@ -43,7 +43,7 @@ public class AccessLogService {
         return accessLogRepository.findAll((root, query, cb) -> {
             List<Predicate> predicateList = new ArrayList<>();
             if (!StringUtils.isEmpty(accessLog.getTitle())) {
-                Predicate predicate = cb.like(root.get("title"), accessLog.getTitle());
+                Predicate predicate = cb.like(root.get("title"), "%" + accessLog.getTitle() + "%");
                 predicateList.add(predicate);
             }
             if (!StringUtils.isEmpty(accessLog.getIp())) {
@@ -51,7 +51,7 @@ public class AccessLogService {
                 predicateList.add(predicate);
             }
             if (!StringUtils.isEmpty(accessLog.getUri())) {
-                Predicate predicate = cb.like(root.get("uri"), accessLog.getUri());
+                Predicate predicate = cb.like(root.get("uri"), "%" + accessLog.getUri() + "%");
                 predicateList.add(predicate);
             }
             if (!StringUtils.isEmpty(accessLog.getHttpMethod())) {
