@@ -125,11 +125,7 @@
                     return d.take + "ms";
                 }
             }
-            , {
-                field: 'createTime', title: '创建时间', templet: function (d) {
-                    return util.toDateString(d.createTime, "yyyy-MM-dd HH:mm:ss");
-                }
-            }
+            , {field: 'createTime', title: '创建时间'}
             , {fixed: 'right', title: '操作', toolbar: '#bar', width: '160'}
         ]);
         //第一个实例
@@ -150,6 +146,7 @@
                 }
             }
             , toolbar: '#toolbar'
+            , autoSort: false
         });
 
         window.$ = layui.$;
