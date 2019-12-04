@@ -2,6 +2,7 @@ package com.ltsw.dragon.base.security;
 
 import com.ltsw.dragon.base.entity.Menu;
 import com.ltsw.dragon.base.entity.MenuRole;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.ConfigAttribute;
@@ -21,6 +22,7 @@ import java.util.*;
 /**
  * @author heshaobing
  */
+@Slf4j
 @Component
 public class SecurityMetadataSource implements FilterInvocationSecurityMetadataSource {
 
@@ -98,6 +100,7 @@ public class SecurityMetadataSource implements FilterInvocationSecurityMetadataS
     }
 
     public void put(List<MenuRole> menuRoles) {
+        log.info("securityMetadataSource 加载权限");
         menuRoles.forEach(menuRole -> {
             Menu menu = menuRole.getMenu();
             if (menu != null && !StringUtils.isEmpty(menu.getUri())) {
@@ -107,6 +110,7 @@ public class SecurityMetadataSource implements FilterInvocationSecurityMetadataS
     }
 
     public void remove(Menu menu) {
+        log.info("securityMetadataSource 移除权限");
         if (menu != null && !StringUtils.isEmpty(menu.getUri())) {
             remove(menu.getUri());
         }
