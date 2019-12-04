@@ -19,7 +19,7 @@ public class Role implements GrantedAuthority {
     private Long id;
     private String name;
     @Column(unique = true)
-    private String role;
+    private String authority;
     private String description;
 
     @Transient
@@ -27,6 +27,6 @@ public class Role implements GrantedAuthority {
 
     @Override
     public String getAuthority() {
-        return role;
+        return authority;
     }
 }

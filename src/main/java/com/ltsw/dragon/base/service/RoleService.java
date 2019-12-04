@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityExistsException;
 import java.util.List;
@@ -29,12 +30,20 @@ public class RoleService {
     private UserRoleRepository userRoleRepository;
 
     public Optional<Role> get(Long id) {
+        if (id == null) {
+            return Optional.empty();
+        }
+
         return roleRepository.findById(id);
     }
 
-    public List<Role> findAll() {
-        return roleRepository.findAll();
+    public Page<Role> findAll(Pageable pageable, String name) {
+        if (StringUtils.isEmpty(name)) {
+            return roleRepository.findAll(pageable);
+        }
+        return roleRepository.findByNameLike(name, pageable);
     }
+
 
     public Page<Role> findAll(Pageable pageable) {
         return roleRepository.findAll(pageable);
@@ -58,13 +67,13 @@ public class RoleService {
     private boolean exist(Role role) {
 
         // 当前角色是否已存在
-        boolean exist = roleRepository.existsByIdAndRole(role.getId(), role.getRole());
+        boolean exist = roleRepository.existsByIdAndAuthority(role.getId(), role.getAuthority());
         // 忽略当前角色
         if (exist) {
             return false;
         }
 
-        return roleRepository.existsByRole(role.getRole());
+        return roleRepository.existsByAuthority(role.getAuthority());
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -72,5 +81,9 @@ public class RoleService {
         roleRepository.deleteById(id);
         menuRoleRepository.deleteByRoleId(id);
         userRoleRepository.deleteByRoleId(id);
+    }
+
+    public List<Role> findAll() {
+        return roleRepository.findAll();
     }
 }

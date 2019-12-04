@@ -2,14 +2,16 @@ package com.ltsw.dragon.base.controller;
 
 import com.ltsw.dragon.base.entity.Role;
 import com.ltsw.dragon.base.service.RoleService;
+import com.ltsw.dragon.common.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.persistence.EntityNotFoundException;
@@ -31,15 +33,14 @@ public class RoleController {
     }
 
     @RequestMapping("edit")
-    public void edit(Long id, Model model) {
+    public void edit(@RequestParam(required = false) Long id, Model model) {
         Role role = roleService.get(id).orElseGet(Role::new);
         model.addAttribute(role);
     }
 
     @RequestMapping("list")
-    public void list(Pageable pageable, Model model) {
-        Page<Role> page = roleService.findAll(pageable);
-        model.addAttribute(page);
+    public void list() {
+
     }
 
     /**
@@ -57,13 +58,22 @@ public class RoleController {
     @ResponseBody
     public ResponseEntity save(Role role) {
         roleService.save(role);
-        return new ResponseEntity(HttpStatus.OK);
+        return ResponseEntity.success();
     }
 
     @RequestMapping("delete")
     @ResponseBody
     public ResponseEntity delete(long id) {
         roleService.delete(id);
-        return new ResponseEntity(HttpStatus.OK);
+        return ResponseEntity.success();
+    }
+
+
+    @RequestMapping("search")
+    @ResponseBody
+    public ResponseEntity search(int page, int limit, String name) {
+        Pageable pageable = PageRequest.of(page - 1, limit, Sort.Direction.DESC, "id");
+        Page<Role> rolesPage = roleService.findAll(pageable, name);
+        return ResponseEntity.success(rolesPage);
     }
 }
