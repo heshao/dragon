@@ -31,8 +31,7 @@ public class AccessLog {
 
     }
 
-    public AccessLog(String title, String httpMethod, String uri, String params, String method, String ip, Date createTime) {
-        this.title = title;
+    public AccessLog(String httpMethod, String uri, String params, String method, String ip, Date createTime) {
         this.httpMethod = httpMethod;
         this.uri = uri;
         this.params = params;

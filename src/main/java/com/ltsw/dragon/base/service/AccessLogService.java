@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.criteria.Predicate;
@@ -21,10 +22,14 @@ import java.util.Optional;
  * @author heshaobing
  */
 @Service
+@Transactional(readOnly = true)
 public class AccessLogService {
 
     @Autowired
     private AccessLogRepository accessLogRepository;
+    @Autowired
+    private MenuService menuService;
+
 
     public Optional<AccessLog> get(Long id) {
         if (id == null) {
@@ -74,7 +79,12 @@ public class AccessLogService {
      * @param accessLog 日志
      */
     @Async
+    @Transactional(rollbackFor = Exception.class)
     public void save(AccessLog accessLog) {
+        if (StringUtils.isEmpty(accessLog.getTitle())) {
+            String title = menuService.getNameByUri(accessLog.getUri());
+            accessLog.setTitle(title);
+        }
         accessLogRepository.save(accessLog);
     }
 
