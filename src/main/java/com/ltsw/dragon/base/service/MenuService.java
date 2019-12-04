@@ -100,7 +100,6 @@ public class MenuService {
         menuRepository.save(menu);
         List<MenuRole> menuRoles = menuRoleRepository.findByMenuId(menu.getId());
         metadataSource.put(menuRoles);
-        throw new RuntimeException();
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -112,7 +111,6 @@ public class MenuService {
             metadataSource.remove(menu);
         });
 
-        throw new RuntimeException();
     }
 
     /**
