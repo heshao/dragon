@@ -29,7 +29,13 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
      */
     boolean existsByAuthority(String authority);
 
-
+    /**
+     * 分页查询角色
+     *
+     * @param name     名称
+     * @param pageable 分页
+     * @return
+     */
     Page<Role> findByNameLike(String name, Pageable pageable);
 
 }
