@@ -48,9 +48,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // 配置iframe
         http.headers().frameOptions().sameOrigin();
         // @formatter:off
-        http
-                .csrf().disable()
-                .authorizeRequests()
+        http.csrf().disable();
+        http.authorizeRequests()
                 .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
                     @Override
                     public <O extends FilterSecurityInterceptor> O postProcess(O object) {
@@ -61,11 +60,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         return object;
                     }
                 })
-                .anyRequest().authenticated()
-                .and()
-                .formLogin().loginPage("/login").permitAll()
-                .and()
-                .rememberMe()
+                .anyRequest().authenticated();
+
+        http.formLogin().loginPage("/login").permitAll();
+        http.logout().permitAll();
+
+        http.rememberMe()
                 .key("unique-and-secret")
                 .rememberMeCookieName("remember-me-cookie-name")
                 .tokenValiditySeconds(24 * 60 * 60);
