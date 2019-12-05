@@ -2,6 +2,7 @@ package com.ltsw.dragon.base.service;
 
 import com.ltsw.dragon.base.entity.AccessLog;
 import com.ltsw.dragon.base.repository.AccessLogRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +22,7 @@ import java.util.Optional;
 /**
  * @author heshaobing
  */
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 public class AccessLogService {
@@ -86,6 +88,7 @@ public class AccessLogService {
             accessLog.setTitle(title);
         }
         accessLogRepository.save(accessLog);
+        log.info("访问日志保存：{}", accessLog);
     }
 
 }
